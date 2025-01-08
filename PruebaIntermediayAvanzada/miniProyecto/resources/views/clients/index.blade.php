@@ -5,10 +5,18 @@
         {{ session('message') }}
     </div>
 @endif
+@if (session()->has('error'))
+    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded mb-4">
+        {{ session('error') }}
+    </div>
+@endif
+
 
 <div class="container p-5">
     <h1 class="text-2xl font-bold mb-4">Clientes</h1>
-    <a href="{{ route('clients.create') }}">Nuevo Cliente</a>
+    @if (Auth::user()->role == 'admin')
+        <a href="{{ route('clients.create') }}">Nuevo Cliente</a>
+    @endif
     <table class="table mt-4">
         <thead>
             <tr>
@@ -16,7 +24,9 @@
                 <th>Nombre</th>
                 <th>Email</th>
                 <th>Teléfono</th>
-                <th>Acciones</th>
+                @if (Auth::user()->role == 'admin')
+                    <th>Acciones</th>
+                @endif
             </tr>
         </thead>
         <tbody>
@@ -34,14 +44,16 @@
                 <td class="px-2">
                     {{ $client->phone }}
                 </td>
-                <td class="px-2">
-                    <a href="{{ route('clients.edit', $client) }}">Editar</a>
-                    <form action="{{ route('clients.destroy', $client) }}" method="POST" style="display:inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit">Eliminar</button>
-                    </form>
-                </td>
+                @if (Auth::user()->role == 'admin')
+                    <td class="px-2">
+                        <a href="{{ route('clients.edit', $client) }}">Editar</a>
+                        <form action="{{ route('clients.destroy', $client) }}" method="POST" style="display:inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit">Eliminar</button>
+                        </form>
+                    </td>
+                @endif
             </tr>
             @endforeach
         </tbody>

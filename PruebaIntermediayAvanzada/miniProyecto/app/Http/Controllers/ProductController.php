@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -24,6 +25,10 @@ class ProductController extends Controller
      */
     public function create()
     {
+        if (Auth::user()->role != 'admin') {
+            return redirect()->route('products.index')->with('error', 'No tienes permisos para crear productos.');
+        }
+
         $categories = Category::all();
 
         return view('products.create', compact('categories'));
@@ -43,7 +48,7 @@ class ProductController extends Controller
 
         Product::create($request->all());
 
-        return redirect()->route('products.index')->with('success','Producto creado con éxito');
+        return redirect()->route('products.index')->with('message','Producto creado con éxito');
     }
 
     /**
@@ -59,6 +64,10 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
+        if (Auth::user()->role != 'admin') {
+            return redirect()->route('products.index')->with('error', 'No tienes permisos para editar productos.');
+        }
+
         $categories = Category::all();
 
         return view('products.edit', compact('product', 'categories'));
@@ -78,7 +87,7 @@ class ProductController extends Controller
 
         $product->update($request->all());
 
-        return redirect()->route('products.index')->with('success','Producto actualizado con éxito');
+        return redirect()->route('products.index')->with('message','Producto actualizado con éxito');
     }
 
     /**
@@ -88,6 +97,6 @@ class ProductController extends Controller
     {
         $product->delete();
 
-        return redirect()->route('products.index')->with('success','Producto eliminado con éxito');
+        return redirect()->route('products.index')->with('message','Producto eliminado con éxito');
     }
 }

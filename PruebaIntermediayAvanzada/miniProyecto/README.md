@@ -1,5 +1,21 @@
 # Evaluación FactoriaBiz
 
+- Comandos necesarios para instalar y probar el proyecto
+
+$ composer install
+$ npm install
+
+$ copy .env.example .env
+
+$ php artisan key:generate
+
+$ php artisan migrate 
+$ php artisan db:seed
+$ php artisan db:seed --class=UserSeeder
+
+$ php artisan serve 
+$ npm run dev
+
 - Organización de las carpetas de mi proyecto
 
 Principalmente he hecho uso de la carpeta '/app', que contiene el código principal de la aplicación, en concreto de los controladores y modelos. 
@@ -16,17 +32,15 @@ Desarrollo de los controladores y definir las rutas correspondientes.
 Implementación de las vistas necesarias.
 Poblar Datos de prueba con Seeders y Factories.
 
-- Comandos necesarios para instalar y probar el proyecto
 
-$ composer install
-$ npm install
+- "Crea un acceso público a tu página donde se visualicen los productos
+de la misma. Un acceso público es aquel que muestra la información sin
+necesidad de autenticar a un usuario."
 
-$ copy .env.example .env
+En este ejercicio, no he podido encontrar mi error pero quería explicar como lo he intentado hacer.
+Primero en el archivo 'web.php' crearía la ruta pública con esta línea de código.
 
-$ php artisan key:generate
+Route::get('/products', [ProductController::class, 'publicIndex'])->name('products.publicIndex');
 
-$ php artisan migrate 
-$ php artisan db:seed
-
-$ php artisan serve 
-$ npm run dev
+Segundo crearía el método publicIndex en el controlador ProductController. Muy parecido por no decir igual al método index. Con el único cambio de hacer el return a su vista correspondiente.
+Y por último mostraría la información de los productos para usuarios no autenticados en su vista correspondiente, en un nuevo archivo llamado 'publicIndex.blade.php'

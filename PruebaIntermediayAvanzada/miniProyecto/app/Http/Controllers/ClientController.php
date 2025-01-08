@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
@@ -22,6 +23,9 @@ class ClientController extends Controller
      */
     public function create()
     {
+        if (Auth::user()->role != 'admin') {
+            return redirect()->route('clients.index')->with('error', 'No tienes permisos para crear clientes.');
+        }
         return view('clients.create');
     }
 
@@ -38,7 +42,7 @@ class ClientController extends Controller
 
         Client::create($request->all());
 
-        return redirect()->route('clients.index')->with('success', 'Cliente creado con éxito.');
+        return redirect()->route('clients.index')->with('message', 'Cliente creado con éxito.');
     }
 
     /**
@@ -46,6 +50,9 @@ class ClientController extends Controller
      */
     public function edit(Client $client)
     {
+        if (Auth::user()->role != 'admin') {
+            return redirect()->route('clients.index')->with('error', 'No tienes permisos para editar clientes.');
+        }
         return view('clients.edit', compact('client'));
     }
 
@@ -62,7 +69,7 @@ class ClientController extends Controller
 
         $client->update($request->all());
 
-        return redirect()->route('clients.index')->with('success', 'Cliente actualizado con éxito.');
+        return redirect()->route('clients.index')->with('message', 'Cliente actualizado con éxito.');
     }
 
     /**
@@ -72,6 +79,6 @@ class ClientController extends Controller
     {
         $client->delete();
 
-        return redirect()->route('clients.index')->with('success', 'Cliente eliminado con éxito.');
+        return redirect()->route('clients.index')->with('message', 'Cliente eliminado con éxito.');
     }
 }

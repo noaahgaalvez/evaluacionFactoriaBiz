@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CategoryController extends Controller
 {
@@ -22,6 +23,9 @@ class CategoryController extends Controller
      */
     public function create()
     {
+        if (Auth::user()->role != 'admin') {
+            return redirect()->route('categories.index')->with('error', 'No tienes permisos para crear categorías.');
+        }
         return view('categories.create');
     }
 
@@ -37,7 +41,7 @@ class CategoryController extends Controller
 
         Category::create($request->all());
 
-        return redirect()->route('categories.index')->with('success','Categoria creada con éxito');
+        return redirect()->route('categories.index')->with('message','Categoria creada con éxito');
     }
 
     /**
@@ -53,6 +57,9 @@ class CategoryController extends Controller
      */
     public function edit(Category $category)
     {
+        if (Auth::user()->role != 'admin') {
+            return redirect()->route('categories.index')->with('error', 'No tienes permisos para editar categorías.');
+        }
         return view('categories.edit', compact('category'));
     }
 
@@ -68,7 +75,7 @@ class CategoryController extends Controller
 
         $category->update($request->all());
 
-        return redirect()->route('categories.index')->with('success','Categoria actualizada con éxito');
+        return redirect()->route('categories.index')->with('message','Categoria actualizada con éxito');
     }
 
     /**
@@ -78,6 +85,6 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        return redirect()->route('categories.index')->with('success','Categoria eliminada con éxito');        
+        return redirect()->route('categories.index')->with('message','Categoria eliminada con éxito');        
     }
 }
